@@ -24,12 +24,31 @@
     background-color: #25d366;
     border: none;
     color: white;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.4rem 0.5rem 2.4rem;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
     display: none; /* solo en móvil */
     z-index: 40;
+    font-size: 1rem;
+    line-height: 1;
+    /* para que el número quede bien */
+  }
+  #btn-toggle-carrito .contador {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    background: #006400;
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
   }
   main {
     display: flex;
@@ -167,7 +186,10 @@
   <h1>Tienda Tech - Electrónica y Gadgets</h1>
 </header>
 
-<button id="btn-toggle-carrito" aria-label="Mostrar/Ocultar carrito">Carrito 🛒</button>
+<button id="btn-toggle-carrito" aria-label="Mostrar/Ocultar carrito">
+  Carrito 🛒
+  <div class="contador" style="display:none">0</div>
+</button>
 
 <main id="productos-container">
   <!-- Productos se cargan aquí -->
@@ -195,6 +217,7 @@
   const btnPagar = document.getElementById('btn-pagar');
   const carritoDiv = document.getElementById('carrito');
   const btnToggleCarrito = document.getElementById('btn-toggle-carrito');
+  const contadorCarrito = btnToggleCarrito.querySelector('.contador');
 
   let carrito = [];
 
@@ -219,12 +242,16 @@
       carritoItems.innerHTML = '<p>El carrito está vacío.</p>';
       btnPagar.disabled = true;
       totalDisplay.textContent = 'Total: $0';
+      contadorCarrito.style.display = 'none';
+      contadorCarrito.textContent = '0';
       return;
     }
 
     let total = 0;
+    let cantidadTotal = 0;
     carrito.forEach(item => {
       total += item.precio * item.cantidad;
+      cantidadTotal += item.cantidad;
       const itemDiv = document.createElement('div');
       itemDiv.className = 'item-carrito';
       itemDiv.innerHTML = `
@@ -235,6 +262,10 @@
     });
     totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
     btnPagar.disabled = false;
+
+    // Actualizar contador visible en botón carrito
+    contadorCarrito.style.display = 'flex';
+    contadorCarrito.textContent = cantidadTotal;
   }
 
   productosContainer.addEventListener('click', e => {
@@ -280,10 +311,12 @@
       carritoDiv.classList.remove('visible');
       carritoDiv.classList.add('oculto');
       btnToggleCarrito.textContent = 'Carrito 🛒';
+      btnToggleCarrito.appendChild(contadorCarrito);
     } else {
       carritoDiv.classList.remove('oculto');
       carritoDiv.classList.add('visible');
       btnToggleCarrito.textContent = 'Cerrar carrito ✖️';
+      btnToggleCarrito.appendChild(contadorCarrito);
     }
   });
 
