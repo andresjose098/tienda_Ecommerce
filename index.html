@@ -32,7 +32,6 @@
     z-index: 40;
     font-size: 1rem;
     line-height: 1;
-    /* para que el número quede bien */
   }
   #btn-toggle-carrito .contador {
     position: absolute;
@@ -56,7 +55,7 @@
     padding: 1rem;
     gap: 1rem;
     justify-content: center;
-    margin-right: 320px; /* espacio para el carrito en escritorio */
+    margin-right: 320px; /* espacio para carrito en escritorio */
   }
   .producto {
     background: white;
@@ -109,6 +108,8 @@
     font-size: 14px;
     z-index: 35;
     transition: transform 0.3s ease;
+    /* visible siempre en escritorio */
+    transform: translateX(0);
   }
   #carrito.oculto {
     transform: translateX(110%);
@@ -171,7 +172,7 @@
       max-height: 70vh;
       right: 10px;
       border-radius: 8px;
-      /* empieza oculto */
+      /* empieza oculto en móvil */
       transform: translateX(110%);
     }
     #carrito.visible {
@@ -195,7 +196,7 @@
   <!-- Productos se cargan aquí -->
 </main>
 
-<div id="carrito" class="oculto" aria-live="polite">
+<div id="carrito" aria-live="polite">
   <h2>Carrito</h2>
   <div id="items-carrito"></div>
   <div id="total">Total: $0</div>
@@ -307,18 +308,38 @@
   });
 
   btnToggleCarrito.addEventListener('click', () => {
-    if(carritoDiv.classList.contains('visible')) {
-      carritoDiv.classList.remove('visible');
-      carritoDiv.classList.add('oculto');
-      btnToggleCarrito.textContent = 'Carrito 🛒';
-      btnToggleCarrito.appendChild(contadorCarrito);
-    } else {
+    // Solo toggle en móvil
+    if(window.innerWidth <= 768){
+      if(carritoDiv.classList.contains('visible')) {
+        carritoDiv.classList.remove('visible');
+        carritoDiv.classList.add('oculto');
+        btnToggleCarrito.textContent = 'Carrito 🛒';
+        btnToggleCarrito.appendChild(contadorCarrito);
+      } else {
+        carritoDiv.classList.remove('oculto');
+        carritoDiv.classList.add('visible');
+        btnToggleCarrito.textContent = 'Cerrar carrito ✖️';
+        btnToggleCarrito.appendChild(contadorCarrito);
+      }
+    }
+  });
+
+  // Para que el carrito se muestre bien si se redimensiona ventana
+  window.addEventListener('resize', () => {
+    if(window.innerWidth > 768){
       carritoDiv.classList.remove('oculto');
-      carritoDiv.classList.add('visible');
-      btnToggleCarrito.textContent = 'Cerrar carrito ✖️';
+      carritoDiv.classList.remove('visible');
+      btnToggleCarrito.style.display = 'none';
+    } else {
+      carritoDiv.classList.add('oculto');
+      btnToggleCarrito.style.display = 'block';
+      btnToggleCarrito.textContent = 'Carrito 🛒';
       btnToggleCarrito.appendChild(contadorCarrito);
     }
   });
+
+  // Inicializar estado correcto al cargar
+  window.dispatchEvent(new Event('resize'));
 
   mostrarProductos();
   actualizarCarrito();
