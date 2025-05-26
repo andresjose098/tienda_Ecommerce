@@ -15,20 +15,21 @@
     padding: 1rem;
     text-align: center;
     position: relative;
+    z-index: 30;
   }
   #btn-toggle-carrito {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
+    position: fixed;
+    right: 10px;
+    top: 10px;
     background-color: #25d366;
     border: none;
     color: white;
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    display: none; /* se mostrará solo en móviles */
-    z-index: 20;
+    display: none; /* solo en móvil */
+    z-index: 40;
   }
   main {
     display: flex;
@@ -36,6 +37,7 @@
     padding: 1rem;
     gap: 1rem;
     justify-content: center;
+    margin-right: 320px; /* espacio para el carrito en escritorio */
   }
   .producto {
     background: white;
@@ -76,21 +78,24 @@
 
   #carrito {
     position: fixed;
-    right: 10px;
     top: 70px;
+    right: 10px;
     width: 300px;
-    max-height: 80vh;
+    max-height: calc(100vh - 80px);
     background: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
     border-radius: 8px;
     overflow-y: auto;
     padding: 1rem;
     font-size: 14px;
+    z-index: 35;
     transition: transform 0.3s ease;
-    z-index: 10;
   }
   #carrito.oculto {
     transform: translateX(110%);
+  }
+  #carrito.visible {
+    transform: translateX(0);
   }
   #carrito h2 {
     margin-top: 0;
@@ -133,9 +138,13 @@
   /* Responsive */
   @media (max-width: 768px) {
     main {
+      margin-right: 0;
       padding: 0.5rem;
       gap: 0.5rem;
       justify-content: center;
+    }
+    #btn-toggle-carrito {
+      display: block;
     }
     #carrito {
       top: 50px;
@@ -143,14 +152,11 @@
       max-height: 70vh;
       right: 10px;
       border-radius: 8px;
-      /* Empieza oculto en móvil */
+      /* empieza oculto */
       transform: translateX(110%);
     }
     #carrito.visible {
       transform: translateX(0);
-    }
-    #btn-toggle-carrito {
-      display: block;
     }
   }
 </style>
@@ -159,8 +165,9 @@
 
 <header>
   <h1>Tienda Tech - Electrónica y Gadgets</h1>
-  <button id="btn-toggle-carrito" aria-label="Mostrar/Ocultar carrito">Carrito 🛒</button>
 </header>
+
+<button id="btn-toggle-carrito" aria-label="Mostrar/Ocultar carrito">Carrito 🛒</button>
 
 <main id="productos-container">
   <!-- Productos se cargan aquí -->
